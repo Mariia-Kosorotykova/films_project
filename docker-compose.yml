@@ -10,15 +10,18 @@ services:
           - 5000:5000
       restart: always
       env_file:
-          - .env.dev
+          - ./.env.dev
   db:
     image: postgres:13-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data/
+    hostname: db_films
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres_passsword
-      - POSTGRES_DB=postgres_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_password
+      POSTGRES_DB: postgres_db
+    ports:
+      - 5432:5432
 
 volumes:
   postgres_data:
