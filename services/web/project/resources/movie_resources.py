@@ -1,7 +1,7 @@
 """This module implements resources for Movie"""
 
 from flask import request, jsonify
-from flask_restful import Resource
+from flask_restx import Resource
 from marshmallow import ValidationError
 
 from ..models.movie import Movie
@@ -17,29 +17,29 @@ class MovieListResource(Resource):
     @staticmethod
     def get():
         """This method displays get method"""
-        movies = Movie.query.all()
-        movie_list = []
-        for movie in movies:
-            director = Director.query.filter_by(director_id=movie.director_id).first()
-            if director is None:
-                director = 'unknown'
-            else:
-                director = Movie.director_id
-            genre_type = []
-            if movie.genres:
-                for genre in movie.genres:
-                    genre_type.append(genre.genre_title)
-            movie_list.append({
-                'movie_id': movie.movie_id,
-                'user': movie.user_id,
-                'movie_title': movie.movie_title,
-                'release_date': movie.release_date,
-                'description': movie.description,
-                'rating': movie.rating,
-                'director': director,
-                'genre_type': genre_type
-            })
-        return jsonify(movie_list)
+        # movies = Movie.query.all()
+        # movie_list = []
+        # for movie in movies:
+        #     director = Director.query.filter_by(director_id=movie.director_id).first()
+        #     if director is None:
+        #         director = 'unknown'
+        #     else:
+        #         director = Movie.director_id
+        #     genre_type = []
+        #     if movie.genres:
+        #         for genre in movie.genres:
+        #             genre_type.append(genre.genre_title)
+        #     movie_list.append({
+        #         'movie_id': movie.movie_id,
+        #         'user': movie.user_id,
+        #         'movie_title': movie.movie_title,
+        #         'release_date': movie.release_date,
+        #         'description': movie.description,
+        #         'rating': movie.rating,
+        #         'director': director,
+        #         'genre_type': genre_type
+        #     })
+        # return jsonify(movie_list)
 
     @staticmethod
     def post():

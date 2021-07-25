@@ -1,7 +1,7 @@
 """This module implements resources for Director"""
 
 from flask import jsonify
-from flask_restful import Resource
+from flask_restx import Resource
 
 from ..models.director import Director
 from ..schemas import DirectorSchema

@@ -1,7 +1,7 @@
 """This module implements resources for User"""
 
-from flask import request, jsonify
-from flask_restful import Resource
+from flask import request
+from flask_restx import Resource
 from marshmallow import ValidationError
 
 from ..schemas import UserSchema
