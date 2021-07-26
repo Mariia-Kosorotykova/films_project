@@ -1,6 +1,6 @@
 """This module implements resources for Director"""
 
-from flask import jsonify
+
 from flask_restx import Resource
 
 from ..models.director import Director
@@ -16,9 +16,8 @@ class DirectorResource(Resource):
     def delete(director_id):
         """This method deletes current director"""
         current_director = Director.query.get_or_404(director_id)
-        db.session.delete(current_director)
-        db.session.commit()
-        return jsonify({
-            "Msg": 200,
-            "Error msg": "Director NOT FOUND"
-        })
+        if current_director:
+            db.session.delete(current_director)
+            db.session.commit()
+            return {"Message": "Deleted successfully"}, 200
+        return {"Error message": "Director not found"}, 404

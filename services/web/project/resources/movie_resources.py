@@ -1,12 +1,10 @@
 """This module implements resources for Movie"""
 
-from flask import request, jsonify
+from flask import request
 from flask_restx import Resource
 from marshmallow import ValidationError
 
 from ..models.movie import Movie
-# from ..models.director import Director
-# from ..models.genre_type import GenreType
 from ..schemas import MovieSchema
 from .. import db
 
@@ -40,24 +38,37 @@ class MovieResource(Resource):
     @staticmethod
     def get(movie_id):
         """This method get movie by id"""
-        movie = Movie.query.get(movie_id)
+        movie = Movie.query.get_or_404(movie_id)
         if movie:
             movie_schema.dump(movie), 200
 
         return {"Error message": "Film not found"}, 404
 
     @staticmethod
-    def patch(movie_id):
-        pass
+    def put(movie_id):
+        """This method updates movie"""
+        current_movie = Movie.query.get_or_404(movie_id)
+        current_movie_json = request.get_json()
+        if current_movie:
+            current_movie.user_id = current_movie_json["user_id"]
+            current_movie.movie_title = current_movie_json["movie_title"]
+            current_movie.release_date = current_movie_json["release_date"]
+            current_movie.description = current_movie_json["description"]
+            current_movie.rating = current_movie_json["rating"]
+            current_movie.poster = current_movie_json["poster"]
+        else:
+            current_movie = movie_schema.load(current_movie_json, session=db.session)
+        db.session.add(current_movie)
+        db.session.commit()
 
+        return movie_schema.dump(current_movie), 200
 
     @staticmethod
     def delete(movie_id):
         """This method deletes current movie"""
-        current_director = Movie.query.get_or_404(movie_id)
-        db.session.delete(current_director)
-        db.session.commit()
-        return jsonify({
-            "Msg": 200,
-            "Error msg": "Director NOT FOUND"
-        })
+        current_movie = Movie.query.get_or_404(movie_id)
+        if current_movie:
+            db.session.delete(current_movie)
+            db.session.commit()
+            return {"Message": "Deleted successfully"}, 200
+        return {"Error message": "Film not found"}, 404
