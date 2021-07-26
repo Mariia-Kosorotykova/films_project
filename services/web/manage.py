@@ -1,8 +1,9 @@
-"""Сonfigures the Flask CLI and manages the app from the command line"""
+"""This module allows to manage the app from the command line"""
 
 
 from flask.cli import FlaskGroup
 from project import app, db
+# from .project import routes
 
 cli = FlaskGroup(app)
 

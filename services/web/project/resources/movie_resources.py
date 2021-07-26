@@ -5,8 +5,8 @@ from flask_restx import Resource
 from marshmallow import ValidationError
 
 from ..models.movie import Movie
-from ..models.director import Director
-from ..models.genre_type import GenreType
+# from ..models.director import Director
+# from ..models.genre_type import GenreType
 from ..schemas import MovieSchema
 from .. import db
 
@@ -16,52 +16,23 @@ class MovieListResource(Resource):
     """This class describes list resource for Movie"""
     @staticmethod
     def get():
-        """This method displays get method"""
-        # movies = Movie.query.all()
-        # movie_list = []
-        # for movie in movies:
-        #     director = Director.query.filter_by(director_id=movie.director_id).first()
-        #     if director is None:
-        #         director = 'unknown'
-        #     else:
-        #         director = Movie.director_id
-        #     genre_type = []
-        #     if movie.genres:
-        #         for genre in movie.genres:
-        #             genre_type.append(genre.genre_title)
-        #     movie_list.append({
-        #         'movie_id': movie.movie_id,
-        #         'user': movie.user_id,
-        #         'movie_title': movie.movie_title,
-        #         'release_date': movie.release_date,
-        #         'description': movie.description,
-        #         'rating': movie.rating,
-        #         'director': director,
-        #         'genre_type': genre_type
-        #     })
-        # return jsonify(movie_list)
+        """This method retrieves all movies"""
+        movies = Movie.query.all()
+        return movie_schema.dump(movies), 200
 
     @staticmethod
     def post():
-        """This method displays post method"""
-        data = request.json
-        movie = Movie()
-
-        movie.user_id = data["user_id"]
-        movie.movie_title = data["movie_title"]
-        movie.release_date = data["release_date"]
-        movie.description = data["description"]
-        movie.rating = data["rating"]
-        movie.poster = data["poster"]
-        movie.director_id = data["director_id"]
-        for genre_id in data["genres"]:
-            movie.genres.append(GenreType.query.get_or_404(genre_id))
+        """This method adds new movie"""
+        new_movie = request.get_json()
         try:
-            db.session.add(movie)
-            db.session.commit()
+            new_movie_data = movie_schema.load(new_movie, session=db.session)
         except ValidationError as er:
             return {"Error message": str(er)}, 400
-        return movie_schema.dump(movie), 201
+
+        db.session.add(new_movie_data)
+        db.session.commit()
+
+        return movie_schema.dump(new_movie_data), 201
 
 
 class MovieResource(Resource):
@@ -69,8 +40,16 @@ class MovieResource(Resource):
     @staticmethod
     def get(movie_id):
         """This method get movie by id"""
-        movie = Movie.query.get_or_404(movie_id)
-        return movie_schema.dump(movie)
+        movie = Movie.query.get(movie_id)
+        if movie:
+            movie_schema.dump(movie), 200
+
+        return {"Error message": "Film not found"}, 404
+
+    @staticmethod
+    def patch(movie_id):
+        pass
+
 
     @staticmethod
     def delete(movie_id):
