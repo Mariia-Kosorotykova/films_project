@@ -1,24 +1,40 @@
 """This module implements resources for Movie"""
 
 from flask import request
-from flask_restx import Resource
+from flask_restx import Resource, fields
 from marshmallow import ValidationError
 
 from ..models.movie import Movie
 from ..schemas import MovieSchema
-from .. import db
+from .. import db, api
 
 movie_schema = MovieSchema()
 
+movie_fields = api.model(
+    "Movie",
+    {
+        "movie_title": fields.String,
+        "release_date": fields.Date,
+        "description": fields.String,
+        "rating": fields.Integer,
+        "poster": fields.String,
+        "director": fields.List(fields.String),
+        "genre_type": fields.List(fields.String),
+    },
+)
+
 class MovieListResource(Resource):
     """This class describes list resource for Movie"""
+
     @staticmethod
+    @api.expect(movie_fields)
     def get():
         """This method retrieves all movies"""
         movies = Movie.query.all()
         return movie_schema.dump(movies), 200
 
     @staticmethod
+    @api.expect(movie_fields)
     def post():
         """This method adds new movie"""
         new_movie = request.get_json()
@@ -36,6 +52,7 @@ class MovieListResource(Resource):
 class MovieResource(Resource):
     """This class describes resource for Movie"""
     @staticmethod
+    @api.expect(movie_fields)
     def get(movie_id):
         """This method get movie by id"""
         movie = Movie.query.get_or_404(movie_id)
@@ -45,12 +62,12 @@ class MovieResource(Resource):
         return {"Error message": "Film not found"}, 404
 
     @staticmethod
+    @api.expect(movie_fields)
     def put(movie_id):
         """This method updates movie"""
         current_movie = Movie.query.get_or_404(movie_id)
         current_movie_json = request.get_json()
         if current_movie:
-            current_movie.user_id = current_movie_json["user_id"]
             current_movie.movie_title = current_movie_json["movie_title"]
             current_movie.release_date = current_movie_json["release_date"]
             current_movie.description = current_movie_json["description"]

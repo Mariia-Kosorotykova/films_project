@@ -25,6 +25,22 @@ def fill_user():
 
     db.session.commit()
 
+def fill_genre_type():
+    """This method fills GenreType"""
+    db.session.add(GenreType(genre_title="Adventure"))
+    db.session.add(GenreType(genre_title="Drama"))
+    db.session.add(GenreType(genre_title="History"))
+
+    db.session.commit()
+
+def fill_director():
+    """This method fills Director"""
+    db.session.add(Director(first_name="Rob", last_name="Minkoff"))
+    db.session.add(Director(first_name="Steven", last_name="Spielberg"))
+    db.session.add(Director(first_name="David", last_name="Fincher"))
+
+    db.session.commit()
+
 def fill_movie():
     """This method fills Movie"""
     db.session.add(Movie(user_id=3, movie_title="Schindler's list",
@@ -39,14 +55,6 @@ def fill_movie():
 
     db.session.commit()
 
-def fill_director():
-    """This method fills Director"""
-    db.session.add(Director(first_name="Rob", last_name="Minkoff"))
-    db.session.add(Director(first_name="Steven", last_name="Spielberg"))
-    db.session.add(Director(first_name="David", last_name="Fincher"))
-
-    db.session.commit()
-
 def fill_movie_director():
     """This method fills MovieDirector"""
     db.session.add(MovieDirector(movie_id=1, director_id=2))
@@ -55,13 +63,6 @@ def fill_movie_director():
 
     db.session.commit()
 
-def fill_genre_type():
-    """This method fills GenreType"""
-    db.session.add(GenreType(genre_title="Adventure"))
-    db.session.add(GenreType(genre_title="Drama"))
-    db.session.add(GenreType(genre_title="History"))
-
-    db.session.commit()
 
 def fill_movie_genre():
     """This method fills MovieGenre"""
