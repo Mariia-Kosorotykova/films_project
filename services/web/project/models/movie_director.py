@@ -9,7 +9,7 @@ class MovieDirector(db.Model):
 
     movie_director_id = db.Column(db.Integer, primary_key=True)
     movie_id = db.Column(db.Integer, db.ForeignKey("movie.movie_id"))
-    director_id = db.Column(db.Integer, db.ForeignKey("director.director_id"))
+    director_id = db.Column(db.Integer, db.ForeignKey("director.director_id", ondelete='CASCADE'))
 
     def __init__(self, movie_id, director_id):
         self.movie_id = movie_id
