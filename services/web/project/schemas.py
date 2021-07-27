@@ -33,6 +33,7 @@ class MovieSchema(SQLAlchemyAutoSchema):
         model = Movie
         load_instance = True
         include_fk = True
+        include_relationships = True
 
 class UserSchema(SQLAlchemyAutoSchema):
     """This schema implements User model"""

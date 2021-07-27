@@ -10,7 +10,6 @@ from .. import db
 
 user_schema = UserSchema()
 
-
 class UserListResource(Resource):
     """This class describes resource for User"""
 

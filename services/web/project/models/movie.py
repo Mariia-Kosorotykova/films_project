@@ -2,6 +2,8 @@
 
 
 from .. import db
+from .movie_director import MovieDirector
+from .movie_genre import MovieGenre
 
 class Movie(db.Model):
     """This class describes Movie model"""
@@ -15,14 +17,12 @@ class Movie(db.Model):
     movie_title = db.Column(db.String(50), nullable=False)
     release_date = db.Column(db.Date)
     description = db.Column(db.Text)
-    rating = db.Column(db.Numeric(3, 1))
+    rating = db.Column(db.Integer)
     poster = db.Column(db.Text, nullable=False)
-    director = db.relationship(
-        "Director", secondary="movie_director"
-    )
-    genre_type = db.relationship(
-        "GenreType", secondary="movie_genre"
-    )
+
+    movie_directors = db.relationship('Director', secondary='movie_director')
+
+    movie_genres = db.relationship("GenreType", secondary='movie_genre')
 
     def __init__(self, user_id, movie_title, release_date, description, rating, poster):
         self.user_id = user_id
@@ -43,12 +43,12 @@ class Movie(db.Model):
                                          rating=self.rating,
                                          poster=self.poster)
 
-    def repr_to_json(self):
-        """Representation to JSON"""
-        return {
-            'movie_title': self.movie_title,
-            'release_date': self.release_date,
-            'description': self.description,
-            'rating': self.rating,
-            'poster': self.poster
-        }
+    # def repr_to_json(self):
+    #     """Representation to JSON"""
+    #     return {
+    #         'movie_title': self.movie_title,
+    #         'release_date': self.release_date,
+    #         'description': self.description,
+    #         'rating': self.rating,
+    #         'poster': self.poster
+    #     }

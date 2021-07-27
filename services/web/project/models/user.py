@@ -1,7 +1,7 @@
 """This module implements User model."""
 
-
 from .. import db
+
 
 class User(db.Model):
     """This class describes User model"""
@@ -25,22 +25,22 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User: login = {login}' \
-               'first_name = {first_name}, '\
-               'last_name = {last_name}, '\
+               'first_name = {first_name}, ' \
+               'last_name = {last_name}, ' \
                'email = {email}>'.format(login=self.login,
                                          first_name=self.first_name,
                                          last_name=self.last_name,
                                          email=self.email)
 
-    def repr_to_json(self):
-        """Representation to JSON"""
-        return {
-            'login': self.login,
-            'first_name': self.first_name,
-            'last_name': self.last_name,
-            'email': self.email
-        }
-
-    def get_id(self):
-        """This method returns user's id"""
-        return self.user_id
+    # def repr_to_json(self):
+    #     """Representation to JSON"""
+    #     return {
+    #         'login': self.login,
+    #         'first_name': self.first_name,
+    #         'last_name': self.last_name,
+    #         'email': self.email
+    #     }
+    #
+    # def get_id(self):
+    #     """This method returns user's id"""
+    #     return self.user_id

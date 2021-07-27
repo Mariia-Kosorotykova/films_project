@@ -16,7 +16,7 @@ movie_fields = api.model(
         "movie_title": fields.String,
         "release_date": fields.Date,
         "description": fields.String,
-        "rating": fields.Integer,
+        "rating": fields.Integer(min=0, max=10),
         "poster": fields.String,
         "director": fields.List(fields.String),
         "genre_type": fields.List(fields.String),
@@ -27,7 +27,6 @@ class MovieListResource(Resource):
     """This class describes list resource for Movie"""
 
     @staticmethod
-    @api.expect(movie_fields)
     def get():
         """This method retrieves all movies"""
         movies = Movie.query.all()
@@ -52,7 +51,6 @@ class MovieListResource(Resource):
 class MovieResource(Resource):
     """This class describes resource for Movie"""
     @staticmethod
-    @api.expect(movie_fields)
     def get(movie_id):
         """This method get movie by id"""
         movie = Movie.query.get_or_404(movie_id)
@@ -63,7 +61,7 @@ class MovieResource(Resource):
 
     @staticmethod
     @api.expect(movie_fields)
-    def put(movie_id):
+    def put(movie_id, validate=True):
         """This method updates movie"""
         current_movie = Movie.query.get_or_404(movie_id)
         current_movie_json = request.get_json()

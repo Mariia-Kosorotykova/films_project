@@ -4,8 +4,6 @@
 from flask.cli import FlaskGroup
 from project import app, db
 
-# from filling import fill_user, fill_movie, fill_director, fill_genre_type
-
 from filling import fill_user, fill_movie, fill_director,\
                     fill_movie_director, fill_genre_type, fill_movie_genre
 

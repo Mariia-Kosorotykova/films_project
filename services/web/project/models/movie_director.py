@@ -3,13 +3,14 @@
 
 from .. import db
 
-MovieDirector = db.Table(
-    "movie_director",
+class MovieDirector(db.Model):
+    """This class describes MovieGenre model"""
+    __tablename__ = "movie_director"
 
-    db.Column(
-        "movie_id", db.Integer, db.ForeignKey("movie.movie_id"), nullable=False
-    ),
-    db.Column(
-        "director_id", db.Integer, db.ForeignKey("director.director_id")
-    )
-)
+    movie_director_id = db.Column(db.Integer, primary_key=True)
+    movie_id = db.Column(db.Integer, db.ForeignKey("movie.movie_id"))
+    director_id = db.Column(db.Integer, db.ForeignKey("director.director_id"))
+
+    def __init__(self, movie_id, director_id):
+        self.movie_id = movie_id
+        self.director_id = director_id

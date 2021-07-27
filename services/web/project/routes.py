@@ -13,5 +13,5 @@ route(UserListResource, '/users')
 
 route(DirectorResource, '/directors/<int:director_id>')
 
-route(MovieListResource, '/movies')
 route(MovieResource, '/movies/<int:movie_id>')
+route(MovieListResource, '/movies')
