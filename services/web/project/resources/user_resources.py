@@ -18,7 +18,7 @@ class UserListResource(Resource):
         """This method retrieves all users"""
         users = User.query.all()
 
-        return user_schema.dump(users), 200
+        return user_schema.dump(users, many=True), 200
 
     @staticmethod
     def post():

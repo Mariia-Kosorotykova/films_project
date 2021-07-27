@@ -18,8 +18,8 @@ movie_fields = api.model(
         "description": fields.String,
         "rating": fields.Integer(min=0, max=10),
         "poster": fields.String,
-        "director": fields.List(fields.String),
-        "genre_type": fields.List(fields.String),
+        "movie_directors": fields.List(fields.String),
+        "movie_genres": fields.List(fields.String),
     },
 )
 
@@ -30,7 +30,7 @@ class MovieListResource(Resource):
     def get():
         """This method retrieves all movies"""
         movies = Movie.query.all()
-        return movie_schema.dump(movies), 200
+        return movie_schema.dump(movies, many=True), 200
 
     @staticmethod
     @api.expect(movie_fields)
@@ -55,7 +55,7 @@ class MovieResource(Resource):
         """This method get movie by id"""
         movie = Movie.query.get_or_404(movie_id)
         if movie:
-            movie_schema.dump(movie), 200
+            return movie_schema.dump(movie), 200
 
         return {"Error message": "Film not found"}, 404
 
