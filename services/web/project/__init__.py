@@ -20,7 +20,7 @@ def hello_world():
     """This method returns text 'Hello World!'"""
     return 'Hello World!'
 
-from .models import director, genre_type, movie, movie_director, movie_genre, user
-from . import routes
-from . import login
+from .models import director, genre_type, movie,\
+                    movie_director, movie_genre, user
+from . import routes, pagination, login
 from .resources import login_logout

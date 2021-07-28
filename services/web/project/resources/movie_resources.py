@@ -14,6 +14,7 @@ movie_schema = MovieSchema()
 movie_fields = api.model(
     "Movie",
     {
+        # "user_id": fields.Integer,
         "movie_title": fields.String,
         "release_date": fields.Date,
         "description": fields.String,
