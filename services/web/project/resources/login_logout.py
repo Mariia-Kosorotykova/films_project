@@ -3,7 +3,7 @@
 import logging
 from datetime import datetime
 from flask import request, jsonify
-from flask_login import login_user, logout_user
+from flask_login import login_user, logout_user, current_user
 from flask_restx import Resource, fields
 from .. import db, app, api
 
@@ -49,9 +49,25 @@ class LogoutResource(Resource):
     @staticmethod
     def post():
         """Logout user"""
-        logout_user()
+        # login = current_user.login
+        # if login:
+        #     logout_user()
+        # # logging.info(f"{datetime.now()} - Successful logout")
+        #     return jsonify(
+        #         {"Status": 200, "Message": "Successful logout"}
+        #     )
+        # else:
+        #     return jsonify(
+        #         {"Status": 401, "Error message": "User isn't login yet"}
+        #     )
+        try:
+            login = current_user.login
+            logout_user()
         # logging.info(f"{datetime.now()} - Successful logout")
-
-        return jsonify(
-            {"Status": 200, "Message": "Successful logout"}
-        )
+            return jsonify(
+                {"Status": 200, "Message": "Successful logout"}
+            )
+        except AttributeError as er:
+            return jsonify(
+                {"Status": 401, "Error message": "User isn't login yet"}
+            )
