@@ -4,9 +4,7 @@
 from flask import abort, jsonify, request, abort
 
 from . import app
-from .models.movie import Movie
 from .resources.movie_resources import MovieListResource
-from .routes import route
 
 def get_paginated_list(results, url, start, limit):
     start = int(start)

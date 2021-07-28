@@ -1,14 +1,26 @@
 """This module implements resources for User"""
 
 from flask import request
-from flask_restx import Resource
+from flask_restx import Resource, fields
 from marshmallow import ValidationError
 
 from ..models.user import User
 from ..schemas import UserSchema
-from .. import db
+from .. import db, api
 
 user_schema = UserSchema()
+
+user_fields = api.model(
+    "User",
+    {
+        "last_name": fields.String,
+        "login": fields.String,
+        "first_name": fields.String,
+        "email": fields.String,
+        "is_admin": fields.String("False"),
+        "password": fields.String,
+    },
+)
 
 class UserListResource(Resource):
     """This class describes resource for User"""
@@ -21,6 +33,7 @@ class UserListResource(Resource):
         return user_schema.dump(users, many=True), 200
 
     @staticmethod
+    @api.expect(user_fields)
     def post():
         """This method adds new user"""
         new_user = request.get_json()

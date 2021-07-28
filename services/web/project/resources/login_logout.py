@@ -42,7 +42,6 @@ class LoginResource(Resource):
                 {"Status": 401, "Message": "Wrong login or password"}
             )
 
-
 class LogoutResource(Resource):
     """This class describes of logout user"""
     @staticmethod
