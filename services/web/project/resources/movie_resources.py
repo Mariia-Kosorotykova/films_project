@@ -3,6 +3,7 @@
 from flask import request
 from flask_restx import Resource, fields
 from marshmallow import ValidationError
+from flask_login import login_required, current_user
 
 from ..models.movie import Movie
 from ..schemas import MovieSchema

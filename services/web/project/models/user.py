@@ -1,9 +1,11 @@
 """This module implements User model."""
 
 from .. import db
+from flask_login import UserMixin
+# from werkzeug.security import generate_password_hash, check_password_hash
 
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     """This class describes User model"""
     __tablename__ = "user"
 
@@ -41,6 +43,11 @@ class User(db.Model):
     #         'email': self.email
     #     }
     #
-    # def get_id(self):
-    #     """This method returns user's id"""
-    #     return self.user_id
+    def get_id(self):
+        """This method returns user's id"""
+        return self.user_id
+
+
+    # def password_verification(self, password):
+    #     """This method checks the password"""
+    #     return check_password_hash(self.password_hash, password)
