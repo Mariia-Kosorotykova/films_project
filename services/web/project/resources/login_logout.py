@@ -28,9 +28,10 @@ class LoginResource(Resource):
     def post():
         """Login user"""
         user_data = request.get_json()
+        password = user_data["password"]
         user = User.query.filter_by(login=user_data['login']).first()
 
-        if user:
+        if user and password == user.password:
             login_user(user)
             db.session.commit()
             # logging.info(f"{datetime.now()} -Successful login")

@@ -1,9 +1,8 @@
 """This module implements User model."""
 
+
 from .. import db
 from flask_login import UserMixin
-# from werkzeug.security import generate_password_hash, check_password_hash
-
 
 class User(db.Model, UserMixin):
     """This class describes User model"""
@@ -11,7 +10,7 @@ class User(db.Model, UserMixin):
 
     user_id = db.Column(db.Integer, primary_key=True)
     login = db.Column(db.String(30), unique=True, nullable=False)
-    password = db.Column(db.String(30), nullable=False)
+    password = db.Column(db.String(50), nullable=False)
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(50), unique=True)
@@ -46,8 +45,3 @@ class User(db.Model, UserMixin):
     def get_id(self):
         """This method returns user's id"""
         return self.user_id
-
-
-    # def password_verification(self, password):
-    #     """This method checks the password"""
-    #     return check_password_hash(self.password_hash, password)
