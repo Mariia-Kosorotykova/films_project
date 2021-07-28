@@ -21,12 +21,11 @@ user_fields = api.model(
 )
 
 class LoginResource(Resource):
-    """Login user"""
-
+    """This class describes of login user"""
     @staticmethod
     @api.expect(user_fields)
     def post():
-        """Login user"""
+        """Realization of login"""
         user_data = request.get_json()
         password = user_data["password"]
         user = User.query.filter_by(login=user_data['login']).first()
@@ -48,18 +47,7 @@ class LogoutResource(Resource):
     """This class describes of logout user"""
     @staticmethod
     def post():
-        """Logout user"""
-        # login = current_user.login
-        # if login:
-        #     logout_user()
-        # # logging.info(f"{datetime.now()} - Successful logout")
-        #     return jsonify(
-        #         {"Status": 200, "Message": "Successful logout"}
-        #     )
-        # else:
-        #     return jsonify(
-        #         {"Status": 401, "Error message": "User isn't login yet"}
-        #     )
+        """Realization of logout"""
         try:
             login = current_user.login
             logout_user()
