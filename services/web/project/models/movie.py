@@ -24,13 +24,13 @@ class Movie(db.Model):
 
     movie_genres = db.relationship("GenreType", secondary='movie_genre')
 
-    def __init__(self, user_id, movie_title, release_date, description, rating, poster):
-        self.user_id = user_id
-        self.movie_title = movie_title
-        self.release_date = release_date
-        self.description = description
-        self.rating = rating
-        self.poster = poster
+    # def __init__(self, user_id, movie_title, release_date, description, rating, poster):
+    #     self.user_id = user_id
+    #     self.movie_title = movie_title
+    #     self.release_date = release_date
+    #     self.description = description
+    #     self.rating = rating
+    #     self.poster = poster
 
     def __repr__(self):
         return '<Movie: movie_title = {movie_title}' \

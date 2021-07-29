@@ -6,6 +6,10 @@ from marshmallow import ValidationError
 from flask_login import login_required, current_user
 
 from ..models.movie import Movie
+from ..models.user import User
+from ..models.director import Director
+from ..models.genre_type import GenreType
+
 from ..schemas import MovieSchema
 from .. import db, api
 
@@ -38,17 +42,31 @@ class MovieListResource(Resource):
     @api.expect(movie_fields)
     def post():
         """This method adds new movie"""
-        new_movie = request.get_json()
-        try:
-            new_movie_data = movie_schema.load(new_movie, session=db.session)
-        except ValidationError as er:
-            return {"Error message": str(er)}, 400
+        if current_user.is_authenticated:
+            movie_data = request.json
+            movie = Movie()
 
-        db.session.add(new_movie_data)
-        db.session.commit()
+            movie.user_id = current_user.get_id()
+            movie.movie_title = movie_data["movie_title"]
+            movie.release_date = movie_data["release_date"]
+            movie.description = movie_data["description"]
+            movie.rating = movie_data["rating"]
+            movie.poster = movie_data["poster"]
 
-        return movie_schema.dump(new_movie_data), 201
+            for current_director in movie_data["movie_directors"]:
+                movie.movie_directors.append(Director.get_or_create(current_director))
 
+            for current_genre in movie_data["movie_genres"]:
+                movie.movie_genres.append(GenreType.get_or_create(current_genre))
+
+            try:
+                db.session.add(movie)
+                db.session.commit()
+            except ValidationError as er:
+                return {"Error message": str(er)}, 400
+
+            return movie_schema.dump(movie), 201
+        return {"Error message": "User isn't authenticated"}, 401
 
 class MovieResource(Resource):
     """This class describes resource for Movie"""

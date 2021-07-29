@@ -4,7 +4,7 @@
 from .. import db
 from flask_login import UserMixin
 
-class User(db.Model, UserMixin):
+class User(UserMixin, db.Model):
     """This class describes User model"""
     __tablename__ = "user"
 
@@ -16,13 +16,8 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(50), unique=True)
     is_admin = db.Column(db.Boolean(), nullable=False)
 
-    def __init__(self, login, password, first_name, last_name, email, is_admin):
-        self.login = login
-        self.password = password
-        self.first_name = first_name
-        self.last_name = last_name
-        self.email = email
-        self.is_admin = is_admin
+    def __init__(self, **kwargs):
+        super(User, self).__init__(**kwargs)
 
     def __repr__(self):
         return '<User: login = {login}' \
