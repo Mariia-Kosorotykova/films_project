@@ -8,7 +8,6 @@ from .models.genre_type import GenreType
 from .models.movie import Movie
 from .models.user import User
 
-
 class DirectorSchema(SQLAlchemyAutoSchema):
     """This schema implements Director model"""
     class Meta:
@@ -37,8 +36,6 @@ class MovieSchema(SQLAlchemyAutoSchema):
     """This schema implements Movie model"""
     class Meta:
         """Describes marshmallow schema"""
-        # fields = ("user_id", "movie_title", "release_date",
-        #           "description", "rating", "poster",)
         exclude = ["user_id"]
         model = Movie
         load_instance = True

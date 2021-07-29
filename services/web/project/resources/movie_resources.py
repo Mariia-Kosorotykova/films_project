@@ -1,6 +1,6 @@
 """This module implements resources for Movie"""
 
-from flask import request
+from flask import request, current_app
 from flask_restx import Resource, fields
 from marshmallow import ValidationError
 from flask_login import login_required, current_user
@@ -66,7 +66,7 @@ class MovieListResource(Resource):
                 return {"Error message": str(er)}, 400
 
             return movie_schema.dump(movie), 201
-        return {"Error message": "User isn't authenticated"}, 401
+        return {"Error message": "User is not logged in"}, 401
 
 class MovieResource(Resource):
     """This class describes resource for Movie"""
@@ -99,11 +99,14 @@ class MovieResource(Resource):
         return movie_schema.dump(current_movie), 200
 
     @staticmethod
+    @login_required
     def delete(movie_id):
         """This method deletes current movie"""
         current_movie = Movie.query.get_or_404(movie_id)
         if current_movie:
-            db.session.delete(current_movie)
-            db.session.commit()
-            return {"Message": "Deleted successfully"}, 200
+            if current_user.user_id == current_movie.user_id or current_user.is_admin:
+                db.session.delete(current_movie)
+                db.session.commit()
+                return {"Message": "Deleted successfully"}, 200
+            return {"Error message": "Not enough permissions"}, 403
         return {"Error message": "Film not found"}, 404
