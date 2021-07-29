@@ -16,12 +16,6 @@ class Director(db.Model):
     def __repr__(self):
         return '<Director: full_name = {full_name}>'.format(full_name=self.full_name)
 
-    # def repr_to_json(self):
-    #     """Representation to JSON"""
-    #     return {
-    #         'full_name': self.full_name
-    #     }
-
     @classmethod
     def search_by_full_name(cls, full_name):
         """This method finds genre by name"""

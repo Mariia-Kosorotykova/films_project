@@ -1,16 +1,17 @@
 """This module implements resources for Movie"""
 
-from flask import request, current_app
+from flask import request, current_app, jsonify
 from flask_restx import Resource, fields
 from marshmallow import ValidationError
 from flask_login import login_required, current_user
+from flask_restx.reqparse import RequestParser
 
 from ..models.movie import Movie
 from ..models.user import User
 from ..models.director import Director
 from ..models.genre_type import GenreType
-
 from ..schemas import MovieSchema
+
 from .. import db, api
 
 movie_schema = MovieSchema()
@@ -18,7 +19,6 @@ movie_schema = MovieSchema()
 movie_fields = api.model(
     "Movie",
     {
-        # "user_id": fields.Integer,
         "movie_title": fields.String,
         "release_date": fields.Date,
         "description": fields.String,
@@ -29,13 +29,66 @@ movie_fields = api.model(
     },
 )
 
+parser = RequestParser()
+parser.add_argument("Match search", type=str, required=False, help="Enter part of movie name")
+parser.add_argument("Genre filter", type=str, required=False, help="Filter by genre")
+
+options = ("Rating DESC", "Rating ASC", "Release date DESC", "Release date ASC")
+parser.add_argument("Order by", choices=options, help="Select field to order by")
+
 class MovieListResource(Resource):
     """This class describes list resource for Movie"""
 
     @staticmethod
+    @api.expect(parser)
     def get():
         """This method retrieves all movies"""
+        args_of_parser = parser.parse_args()
+
+        match_search = args_of_parser.get("Match search", "")
+        sort_by = args_of_parser.get("Order by", "")
+        genre_filter = args_of_parser.get("Genre filter", "")
+
+
         movies = Movie.query.all()
+
+        # Implements search by partial match
+        if match_search:
+            movies = Movie.query.filter(Movie.movie_title.ilike(f"%{match_search}%")).all()
+
+        # Implements to filter by genre
+        # if genre_filter:
+        #     current_genre = GenreType.query.filter(GenreType.genre_title.ilike(f"{genre_filter}")).first()
+        #     if not current_genre:
+        #         return {"Error": "Movie with such genre isn't exist"}, 404
+        #     else:
+        #         movies = Movie.query.join(Movie.movie_genres).filter(GenreType.genre_title == current_genre)
+
+
+        # if genre_filter:
+        #     current_genre = GenreType.query.filter(GenreType.genre_title.ilike(f"{genre_filter}")).all()
+        #     if not current_genre:
+        #         return {"Error": "Movie with such genre isn't exist"}, 404
+        #     else:
+        #         # movies = Movie.filter(Movie.movie_genres.contains(current_genre))
+
+
+        # Implements sorting by options
+        if sort_by and sort_by in options:
+            if sort_by == "Rating DESC":
+                movies = Movie.query.order_by(Movie.rating.desc())
+            elif sort_by == "Rating ASC":
+                movies = Movie.query.order_by(Movie.rating)
+            elif sort_by == "Release date DESC":
+                movies = Movie.query.order_by(Movie.release_date.desc())
+            elif sort_by == "Release date ASC":
+                movies = Movie.query.order_by(Movie.release_date)
+
+
+
+
+
+
         return movie_schema.dump(movies, many=True), 200
 
     @staticmethod

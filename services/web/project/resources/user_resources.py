@@ -1,5 +1,6 @@
 """This module implements resources for User"""
 
+
 from flask import request
 from flask_restx import Resource, fields
 from marshmallow import ValidationError

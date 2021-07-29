@@ -28,15 +28,6 @@ class User(UserMixin, db.Model):
                                          last_name=self.last_name,
                                          email=self.email)
 
-    # def repr_to_json(self):
-    #     """Representation to JSON"""
-    #     return {
-    #         'login': self.login,
-    #         'first_name': self.first_name,
-    #         'last_name': self.last_name,
-    #         'email': self.email
-    #     }
-    #
     def get_id(self):
         """This method returns user's id"""
         return self.user_id
