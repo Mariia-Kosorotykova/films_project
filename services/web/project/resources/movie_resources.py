@@ -30,8 +30,16 @@ movie_fields = api.model(
 )
 
 parser = RequestParser()
-parser.add_argument("Match search", type=str, required=False, help="Enter part of movie name")
-parser.add_argument("Genre filter", type=str, required=False, help="Filter by genre")
+parser.add_argument("Match search", type=str,
+                    required=False, help="Enter part of movie name")
+parser.add_argument("Genre filter", type=str,
+                    required=False, help="Enter genre for desire movie")
+parser.add_argument("Filter year FROM", type=str,
+                    required=False, help="Enter start year")
+parser.add_argument("Filter year TO", type=str,
+                    required=False, help="Enter end year")
+parser.add_argument("Director filter", type=str,
+                    required=False, help="Enter director name for desire movie")
 
 options = ("Rating DESC", "Rating ASC", "Release date DESC", "Release date ASC")
 parser.add_argument("Order by", choices=options, help="Select field to order by")
@@ -48,7 +56,9 @@ class MovieListResource(Resource):
         match_search = args_of_parser.get("Match search", "")
         sort_by = args_of_parser.get("Order by", "")
         genre_filter = args_of_parser.get("Genre filter", "")
-
+        year_from = args_of_parser.get("Filter year FROM", "")
+        year_to = args_of_parser.get("Filter year TO", "")
+        director_fullname = args_of_parser.get("Director filter", "")
 
         movies = Movie.query.all()
 
@@ -56,22 +66,27 @@ class MovieListResource(Resource):
         if match_search:
             movies = Movie.query.filter(Movie.movie_title.ilike(f"%{match_search}%")).all()
 
-        # Implements to filter by genre
-        # if genre_filter:
-        #     current_genre = GenreType.query.filter(GenreType.genre_title.ilike(f"{genre_filter}")).first()
-        #     if not current_genre:
-        #         return {"Error": "Movie with such genre isn't exist"}, 404
-        #     else:
-        #         movies = Movie.query.join(Movie.movie_genres).filter(GenreType.genre_title == current_genre)
+        # Implements filter by genre
+        if genre_filter:
+            current_genre = GenreType.query.filter(
+                GenreType.genre_title.ilike(f"{genre_filter}")).first()
+            if not current_genre:
+                return {"Error": "Movie with such genre isn't exist"}, 404
+            else:
+                movies = Movie.query.join(Movie.movie_genres).filter(
+                    GenreType.genre_title.ilike(f"{genre_filter}")
+                )
 
+        # Implements filter by release date
+        if year_from:
+            movies = Movie.query.filter(Movie.release_date >= f"{year_from}-01-01")
+        if year_to:
+            movies = Movie.query.filter(Movie.release_date <= f"{year_to}-12-31")
 
-        # if genre_filter:
-        #     current_genre = GenreType.query.filter(GenreType.genre_title.ilike(f"{genre_filter}")).all()
-        #     if not current_genre:
-        #         return {"Error": "Movie with such genre isn't exist"}, 404
-        #     else:
-        #         # movies = Movie.filter(Movie.movie_genres.contains(current_genre))
-
+        # Implements filter by director name
+        if director_fullname:
+            movies = Movie.query.join(Movie.movie_directors).filter(
+                Director.full_name.ilike(f"%{director_fullname}%"))
 
         # Implements sorting by options
         if sort_by and sort_by in options:
@@ -83,11 +98,6 @@ class MovieListResource(Resource):
                 movies = Movie.query.order_by(Movie.release_date.desc())
             elif sort_by == "Release date ASC":
                 movies = Movie.query.order_by(Movie.release_date)
-
-
-
-
-
 
         return movie_schema.dump(movies, many=True), 200
 
