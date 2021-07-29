@@ -81,22 +81,25 @@ class MovieResource(Resource):
 
     @staticmethod
     @api.expect(movie_fields)
+    @login_required
     def put(movie_id, validate=True):
         """This method updates movie"""
         current_movie = Movie.query.get_or_404(movie_id)
         current_movie_json = request.get_json()
-        if current_movie:
-            current_movie.movie_title = current_movie_json["movie_title"]
-            current_movie.release_date = current_movie_json["release_date"]
-            current_movie.description = current_movie_json["description"]
-            current_movie.rating = current_movie_json["rating"]
-            current_movie.poster = current_movie_json["poster"]
-        else:
-            current_movie = movie_schema.load(current_movie_json, session=db.session)
-        db.session.add(current_movie)
-        db.session.commit()
+        if current_user.user_id == current_movie.user_id or current_user.is_admin:
+            if current_movie:
+                current_movie.movie_title = current_movie_json["movie_title"]
+                current_movie.release_date = current_movie_json["release_date"]
+                current_movie.description = current_movie_json["description"]
+                current_movie.rating = current_movie_json["rating"]
+                current_movie.poster = current_movie_json["poster"]
+            else:
+                current_movie = movie_schema.load(current_movie_json, session=db.session)
+            db.session.add(current_movie)
+            db.session.commit()
 
-        return movie_schema.dump(current_movie), 200
+            return movie_schema.dump(current_movie), 200
+        return {"Error message": "Not enough permissions"}, 403
 
     @staticmethod
     @login_required
