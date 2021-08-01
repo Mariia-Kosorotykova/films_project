@@ -35,9 +35,9 @@ def fill_genre_type():
 
 def fill_director():
     """This method fills Director"""
-    db.session.add(Director(first_name="Rob", last_name="Minkoff"))
-    db.session.add(Director(first_name="Steven", last_name="Spielberg"))
-    db.session.add(Director(first_name="David", last_name="Fincher"))
+    db.session.add(Director(full_name="Rob Minkoff"))
+    db.session.add(Director(full_name="Steven Spielberg"))
+    db.session.add(Director(full_name="David Fincher"))
 
     db.session.commit()
 
